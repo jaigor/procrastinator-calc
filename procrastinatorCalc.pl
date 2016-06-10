@@ -5,25 +5,25 @@
 % Tema: Los videojuegos
 % Título: PROCRASTINATOR CALCULATOR
 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            PREDICADOS DINAMICOS
 % Usados para la inserción y borrado de elementos en la base de conocimiento (BC)
 % y escogidos mediante el menu de gestion de la calculadora
 %
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 :- dynamic(info/5,juegos/2,rol/1,accion/1,fps/1,aventura/1,deportes/1,estrategia/1,puzzle/1,peleas/1).
 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            CONSTANTES: PLATAFORMAS
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 playstation4.
 pc.
 xboxone.
 wiiu.
 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            GÉNEROS
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 
 % ROL
 rol(skyrim).
@@ -115,10 +115,10 @@ peleas(soulCaliburV).
 peleas(pokkenTournament).
 
 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            INFORMACION EXTRA VIDEOJUEGOS
 %(nombre, año de salida, desarrollador, DuracionCorta, DuracionLarga)
-%-------------------------------------------- ----------------------------------
+%-------------------------------------------- ---------------------------
 info(skyrim,2011,bethesda,31,105).
 info(finalFantasy13,2009,squareEnix,50,62).
 info(darkSouls3,2016,fromSoftware,26,37).
@@ -193,10 +193,10 @@ info(codBlackOps3,2015,treyarch,9,12).
 info(dishonored,2012,arkane,13,18).
 info(deadIsland,2011,techland,18,27).
 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            VENTAS POR GÉNERO (estadistica del 2014 en EEUU)
 %       Existen categorías que no se han tenido en cuenta o incluido en otras
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 
  ventasGenero(accion,fps).
  ventasGenero(fps,deportes).
@@ -206,14 +206,10 @@ info(deadIsland,2011,techland,18,27).
  ventasGenero(peleas,estrategia).
  ventasGenero(estrategia,puzzle).
  
-% comparacion de ventas por genero
- mejorVentas(X,Y) :- ventasGenero(X,Y).
- mejorVentas(X,Y) :- ventasGenero(X,Z), mejorVentas(Z,Y).
- 
-%-------------------------------------------------------------------------------
+%-----------------------------------------------------------------------
 %     CRITICA POR GÉNERO (estadistica del 2015 de reviews oficiales mundial)
 %       Existen categorías que no se han tenido en cuenta o incluido en otras
-%-------------------------------------------------------------------------------
+%-----------------------------------------------------------------------
 
  criticaGeneroOficial(accion,rol).
  criticaGeneroOficial(rol,aventura).
@@ -223,14 +219,10 @@ info(deadIsland,2011,techland,18,27).
  criticaGeneroOficial(peleas,fps).
  criticaGeneroOficial(fps,estrategia).
  
- % comparacion de criticas oficiales
- mejorCriticaOficial(X,Y) :- criticaGeneroOficial(X,Y).
- mejorCriticaOficial(X,Y) :- criticaGeneroOficial(X,Z), mejorCriticaOficial(Z,Y).
- 
-%-------------------------------------------------------------------------------
+%-----------------------------------------------------------------------
 %   CRITICA POR GÉNERO (estadistica de users mundial de los 50 primeros juegos)
 %       Existen categorías que no se han tenido en cuenta o incluido en otras
-%-------------------------------------------------------------------------------
+%-----------------------------------------------------------------------
 
  criticaGeneroUsers(fps,rol).
  criticaGeneroUsers(rol,accion).
@@ -240,42 +232,9 @@ info(deadIsland,2011,techland,18,27).
  criticaGeneroUsers(puzzle,estrategia).
  criticaGeneroUsers(estrategia,peleas).
 
- % comparacion de criticas de usuarios
- mejorCriticaUsers(X,Y) :- criticaGeneroUsers(X,Y).
- mejorCriticaUsers(X,Y) :- criticaGeneroUsers(X,Z), mejorCriticaUsers(Z,Y).
-
- % definimos la comparacion entre las tres categorías, habiendo hecho una ponderación de importancia
- % basada en valores numéricos, 3 en la opinión de los usuarios, 
- % un 2 en la critica oficial y un 1 en las ventas por género.
- % Dependiendo de cual se cumpla se escoge imprimir en pantalla el mejor de ambos (o ninguno si existe empate)
- mejorTotal(_,_,0,0).
- mejorTotal(Genero1,Genero2,Var1,Var2):- 
-	mejorVentas(Genero1,Genero2),
-	Var1 is Var1+1,
-	mejorVentas(Genero2,Genero1),
-	Var2 is Var2+1,
-	criticaGeneroOficial(Genero1,Genero2),
-	Var1 is Var1+2,
-	criticaGeneroOficial(Genero2,Genero1),
-	Var2 is Var2+2,
-	criticaGeneroUsers(Genero1,Genero2),
-	Var1 is Var1+3,
-	criticaGeneroUsers(Genero2,Genero1),
-	Var2 is Var2+3,
-	imprimirMejorTotal(Genero1,Genero2,Var1,Var2).
-	
-% imprimimos en pantalla el mejor de los dos géneros
-imprimirMejorTotal(Genero1,Genero2,Var1,Var2) :-
-	Var1 > Var2,
-	format('El mejor género para escoger es: ~w',[Genero1]), nl,
-	Var1 < Var2,
-	format('El mejor género para escoger es: ~w',[Genero2]), nl,
-	Var1 = Var2,
-	format('No hay diferencia entre los géneros a escoger'),nl.
- 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            LISTADO DE JUEGOS
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 
 juegos(rol,[skyrim,finalFantasy13,darkSouls3,stardewValley,hyperLightDrifter,baldursGate2,vampireTheMasquerade,diablo2,theWitcher3,dragonAge,deusEx,massEffect2,finalFantasy7]).
 juegos(accion,[theLastOfUs,gta5,bastion,batmanArkhamAsylum,hotLineMiami,darksiders,metalGearSolid5,quantumBreak,theDivision]).
@@ -286,200 +245,266 @@ juegos(estrategia,[starcraft2,civilization5,warcraft3,xcom,commandConquer3,comma
 juegos(puzzle,[portal2,tetris,theWitness,fez,braid,theTalosPrinciple,limbo]).
 juegos(peleas,[mortalKombatX,streetFighterV,superSmashBros,tekken6,guiltyGearXrd,soulCaliburV,pokkenTournament]).
 
-%-------------------------------------------------------------------------------
+%------------------------------------------------------------------------
 %            MENU CALCULADORA
-%-------------------------------------------------------------------------------
-% el menu se inicia con el comando inicio. Se borra la pantalla y se llama al menu Inicial
-inicio :- clear, menuInicio. % comienza el programa
-clear :- write('\033[2J'). % borrar pantalla
+% Aqui se inicia todo el programa junto con los diferentes menus
+%------------------------------------------------------------------------
+ % el menu se inicia con el comando inicio. Se borra la pantalla y
+ % se llama al menu Inicial
+ inicio :- clear, menuInicio. % comienza el programa
+ clear :- write('\033[2J'). % borrar pantalla
 
-% Menu inicial para la introduccion de inputs del usuario, que llevan a otros submenus
-menuInicio :-
-	nl,nl,
-	write('**************************************'),nl,
-	write('      PROCRASTINATOR CALCULATOR'),nl,
-	write('**************************************'),nl,
-	write(' MENU --> Inicio'),nl,nl, % menu principal de opciones
-	write(' 1 - Quiero procrastinar'),nl,
-	write(' 2 - Gestionar Base de Conocimiento'),nl,
-	write(' 3 - Comparar géneros de manera estadística'),nl,nl,
-	write(' s - Salir'),nl,nl,
-	write(' Introduzca una opción: '),
-	read(O), clear, opcion(O).
+ % Menu inicial para la introduccion de inputs del usuario, que llevan a
+ % otros submenus
+ menuInicio :-
+        nl,nl,
+        write('**************************************'),nl,
+        write('      PROCRASTINATOR CALCULATOR'),nl,
+        write('**************************************'),nl,
+        write(' MENU --> Inicio'),nl,nl, % menu principal de opciones
+        write(' 1 - Quiero procrastinar'),nl,
+        write(' 2 - Gestionar Base de Conocimiento'),nl,
+        write(' 3 - Comparar géneros de manera estadística'),nl,nl,
+        write(' s - Salir'),nl,nl,
+        write(' Introduzca una opción: '),
+        read(O), clear, opcion(O).
 
-% Submenu para escoger las horas, el tipo de duracion del juego y el tipo de genero por parte del usuario	
-menuProcrastinar :-
-	nl,nl,
-	write('MENU --> Procrastinar:'),nl,nl,
-	write('A continuación, inserte los parámetros que se le piden:'),nl,
-	write('¿Cuántas horas tiene disponibles en el período a procrastinar?'),nl,
-	read(Horas), nl,
-	write('¿Quiere completar todo en un juego? (responda s o n)'),nl,
-	read(Duracion), nl,
-	write('Escoja cualquiera de los siguientes géneros juegos (escriba la palabra): '),nl,
-	write(' rol'),nl,
-	write(' accion'),nl,
-	write(' fps'),nl,
-	write(' aventura'),nl,
-	write(' deportes'),nl,
-	write(' estrategia'),nl,
-	write(' puzzle'),nl,
-	write(' peleas'),nl,
-	read(Genero), nl,
-	escogerGenero(Genero,Horas,Duracion),
-	menuInicio.
+ % Submenu para escoger las horas, el tipo de duracion del juego y el tipo de
+ % genero por parte del usuario
+ menuProcrastinar :-
+        nl,nl,
+        write('MENU --> Procrastinar:'),nl,nl,
+        write('A continuación, inserte los parámetros que se le piden:'),nl,
+        write('¿Cuántas horas tiene disponibles en el período a procrastinar?'),nl,
+        read(Horas), nl,
+        write('¿Quiere completar todo en un juego? (responda s o n)'),nl,
+        read(Duracion), nl,
+        write('Escoja cualquiera de los siguientes géneros juegos (escriba la palabra): '),nl,
+        write(' rol'),nl,
+        write(' accion'),nl,
+        write(' fps'),nl,
+        write(' aventura'),nl,
+        write(' deportes'),nl,
+        write(' estrategia'),nl,
+        write(' puzzle'),nl,
+        write(' peleas'),nl,
+        read(Genero), nl,
+        escogerGenero(Genero,Horas,Duracion),
+        menuInicio.
 
-% Submenu para escoger las opciones de gestion de la Base de Conocimiento
-menuGestion :-
-	nl,nl,
-	write('MENU --> Gestion Base de Conocimiento:'),nl,nl,
-	write(' 1 - Consultar un juego'),nl,
-	write(' 2 - Insertar juego'),nl,
-	write(' 3 - Borrar juego'),nl,
-	write(' 4 - Listar todos los juegos'),nl,nl,
-	write(' s - Salir'),nl,nl,
-	write(' Indique la opción que desea: '),
-	read(BC), clear, gestion(BC),
-	menuGestion.
+ % Submenu para escoger las opciones de gestion de la Base de Conocimiento
+ menuGestion :-
+        nl,nl,
+        write('MENU --> Gestion Base de Conocimiento:'),nl,nl,
+        write(' 1 - Consultar un juego'),nl,
+        write(' 2 - Insertar juego'),nl,
+        write(' 3 - Borrar juego'),nl,
+        write(' 4 - Listar todos los juegos'),nl,nl,
+        write(' s - Salir'),nl,nl,
+        write(' Indique la opción que desea: '),
+        read(BC), clear, gestion(BC),
+        menuGestion.
 
-% Submenu para escoger las opciones de comparaciones	
-menuComparar :- 
-	write('MENU --> Comparar géneros de manera estadística:'),nl,nl,
-	write(' 1 - Por Ventas'),nl,
-	write(' 2 - Por Críticas oficiales'),nl,
-	write(' 3 - Por Críticas de usuarios'),nl, 
-	write(' 4 - Evaluando las tres opciones anteriores'),nl, nl,
-	write(' s - Salir'),nl,nl,
-	write(' Indique la opción que desea: '),
-	read(CP), clear, comparar(CP).
+ % Submenu para escoger las opciones de comparaciones
+ menuComparar :-
+        write('MENU --> Comparar géneros de manera estadística:'),nl,nl,
+        write(' 1 - Por Ventas'),nl,
+        write(' 2 - Por Críticas oficiales'),nl,
+        write(' 3 - Por Críticas de usuarios'),nl, 
+        write(' 4 - Evaluando las tres opciones anteriores'),nl, nl,
+        write(' s - Salir'),nl,nl,
+        write(' Indique la opción que desea: '),
+        read(CP), clear, comparar(CP).
 
-% CONFIGURACION ACCIONES MENUS
-% Inicio, se borra siempre la pantalla y se llama a la regla de su menu correspondiente
-opcion(1) :-  clear, menuProcrastinar.
-opcion(2) :-  clear, menuGestion.
-opcion(3) :-  clear, menuComparar.
-opcion(s) :-  halt.
-% si se introduce un caracter no reflejado en cualquier momento vuelve a Inicio
-opcion(_) :-  write('Parámetro/Género incorrecto, vuelva a intentarlo'),nl,nl,
-menuInicio.
+ % CONFIGURACION ACCIONES MENUS
+ % Inicio, se borra siempre la pantalla y se llama a la regla de su
+ % menu correspondiente
+ opcion(1) :-  clear, menuProcrastinar.
+ opcion(2) :-  clear, menuGestion.
+ opcion(3) :-  clear, menuComparar.
+ opcion(s) :-  halt.
+ % si se introduce un caracter no reflejado en cualquier momento vuelve a Inicio
+ opcion(_) :-  write('Parámetro/Género incorrecto, vuelva a intentarlo'),nl,nl,
+ menuInicio.
 
-% Gestion de Base de Conocimiento
-% consulta en el listado de juegos por el nombre especificado (input usuario, C)
-gestion(1) :-
-	write('¿Qué juego quieres consultar? (Nombre)'), nl, read(C), nl,
-	listing(info(C,_,_,_,_)),
-	menuGestion. % consulta el juego en BC por el parametro de Nombre
+ % Gestion de Base de Conocimiento
+ % consulta en el listado de juegos por el nombre especificado (input usuario, C)
+ gestion(1) :-
+        write('¿Qué juego quieres consultar? (Nombre)'), nl, read(C), nl,
+        listing(info(C,_,_,_,_)),
+        menuGestion. % consulta el juego en BC por el parametro de Nombre
 
-% pregunta primero al usuario todos los parametros necesarios para introducir el juego en la base de datos	
-gestion(2) :-
-	write('Introduce los datos del juego a añadir. '), nl,
-	write('Nombre: '), read(Nombre), nl,
-	write('Año: '), read(Ano), nl,
-	write('Desarrollador: '), read(Desarr), nl,
-	write('Duración sólo Historia: '), read(HCorta), nl,
-	write('Duración completa: '), read(HLarga), nl,
-	write('Género al que pertenece: '), read(G), nl,
-	insertar(Nombre,Ano,Desarr,HCorta,HLarga),
-	insertarG(G,Nombre),
-	menuGestion.
+ % pregunta primero al usuario todos los parametros necesarios para
+ % introducir el juego en la base de datos
+ gestion(2) :-
+        write('Introduce los datos del juego a añadir. '), nl,
+        write('Nombre: '), read(Nombre), nl,
+        write('Año: '), read(Ano), nl,
+        write('Desarrollador: '), read(Desarr), nl,
+        write('Duración sólo Historia: '), read(HCorta), nl,
+        write('Duración completa: '), read(HLarga), nl,
+        write('Género al que pertenece: '), read(G), nl,
+        insertar(Nombre,Ano,Desarr,HCorta,HLarga),
+        insertarG(G,Nombre),
+        menuGestion.
 
-% elimina el juego de la BC por nombre recogido	
-gestion(3) :-
-	write('Indique el Nombre del juego a eliminar. '), nl,
-	write('Nombre: '), read(Nombre), nl,
-	borrar(Nombre,_,_,_,_),
-	menuGestion.
+ % elimina el juego de la BC por nombre recogido
+ gestion(3) :-
+        write('Indique el Nombre del juego a eliminar. '), nl,
+        write('Nombre: '), read(Nombre), nl,
+        borrar(Nombre,_,_,_,_),
+        menuGestion.
 
-% lista con el predicado definido listing todos los datos de la BC
-gestion(4) :-
-	listing(info),
-	menuGestion.
-	
-% salir de la aplicacion
-gestion(s) :-  
-	halt.
+ % lista con el predicado definido listing todos los datos de la BC
+ gestion(4) :-
+        listing(info),
+        menuGestion.
+        
+ % salir de la aplicacion
+ gestion(s) :-
+        halt.
 
-% Gestion de Menu Comparacion
-% recoge los dos generos deseados y nos muestra cual se encuentra en mejor posicion
-comparar(1) :-
-	write('Introduce el primer género a comparar: '), read(Genero1), nl,
-	write('Introduce el segundo género a comparar: '), read(Genero2), nl,
-	mejorVentas(Genero1,Genero2), % se llama a la función de comparación con los input del usuario
-	format('El género ~w se encuentra mejor posicionado.', [Genero1]), nl,
-	mejorVentas(Genero2,Genero1),
-	format('El género ~w se encuentra mejor posicionado.', [Genero2]), nl,
-	menuComparar.
+ % Gestion de Menu Comparacion
+ % recoge los dos generos deseados y nos muestra cual se encuentra
+ % en mejor posicion para cada una de las comparaciones
+ comparar(1) :-
+        write('Introduce el primer género a comparar'), read(Genero1), nl,
+        write('Introduce el segundo género a comparar'), read(Genero2), nl,
+        % se llama a la función de comparación con los input del usuario
+        % utilizando las clausulas if-else de Prolog
+        ( mejorVentas(Genero1,Genero2) ->
+          format('El género ~w se encuentra mejor posicionado.', [Genero1])
+        ; format('El género ~w se encuentra mejor posicionado.', [Genero2])
+        ),
+        nl,nl, menuComparar.
 
-comparar(2) :-
-	write('Introduce el primer género a comparar: '), read(Genero1), nl,
-	write('Introduce el segundo género a comparar: '), read(Genero2), nl,
-	mejorCriticaOficial(Genero1,Genero2),
-	format('El género ~w se encuentra mejor posicionado.', [Genero1]), nl,
-	mejorCriticaOficial(Genero2,Genero1),
-	format('El género ~w se encuentra mejor posicionado.', [Genero2]), nl,
-	menuComparar.
+ comparar(2) :-
+        write('Introduce el primer género a comparar'), read(Genero1), nl,
+        write('Introduce el segundo género a comparar'), read(Genero2), nl,
+        ( mejorCriticaOficial(Genero1,Genero2) ->
+          format('El género ~w se encuentra mejor posicionado.', [Genero1])
+        ; format('El género ~w se encuentra mejor posicionado.', [Genero2])
+        ),
+        nl,nl, menuComparar.
+        
+ comparar(3) :-
+        write('Introduce el primer género a comparar'), read(Genero1), nl,
+        write('Introduce el segundo género a comparar'), read(Genero2), nl,
+        ( mejorCriticaUsers(Genero1,Genero2) ->
+          format('El género ~w se encuentra mejor posicionado.', [Genero1])
+        ; format('El género ~w se encuentra mejor posicionado.', [Genero2])
+        ),
+        nl,nl, menuComparar.
+        
+ comparar(4) :-
+        write('Introduce el primer género a comparar: '), read(Genero1), nl,
+        write('Introduce el segundo género a comparar: '), read(Genero2), nl,
+        % instancio a cero las variable que uso para sumar y ponderar
+        mejorTotal(Genero1,Genero2,0),
+        menuComparar.
 
-comparar(3) :-
-	write('Introduce el primer género a comparar: '), read(Genero1), nl,
-	write('Introduce el segundo género a comparar: '), read(Genero2), nl,
-	mejorCriticaUsers(Genero1,Genero2),
-	format('El género ~w se encuentra mejor posicionado.', [Genero1]), nl,
-	mejorCriticaUsers(Genero2,Genero1),
-	format('El género ~w se encuentra mejor posicionado.', [Genero2]), nl,
-	menuComparar.
-	
-comparar(4) :-
-	write('Introduce el primer género a comparar: '), read(Genero1), nl,
-	write('Introduce el segundo género a comparar: '), read(Genero2), nl,
-	mejorTotal(Genero1,Genero2,_,_),
-	menuComparar.
-
-comparar(s) :-
-	gestion(s).
-	
-%-------------------------------------------------------------------------------
+ comparar(s) :-
+        gestion(s).
+        
+%------------------------------------------------------------------------
 %            GESTION CALCULADORA
-%-------------------------------------------------------------------------------
+% Aqui se incluye el motor para las comparaciones de generos,
+% acciones de modificacion de BC y la propia eleccion de horas a procrastinar.
+%------------------------------------------------------------------------
 
-% insertar un juego en la BC al final de la lista, en el predicado info
-insertar(Nombre,Ano,Desarr,HCorta,HLarga) :-
-	assertz(info(Nombre,Ano,Desarr,HCorta,HLarga)).
+ % comparacion de ventas por genero
+ mejorVentas(X,Y) :- ventasGenero(X,Y).
+ mejorVentas(X,Y) :- ventasGenero(X,Z), mejorVentas(Z,Y).
 
-% inserta el juego en su correspondiente género (tanto en el listado general como en el predicado juegos)
-insertarG(G,Nombre):-
-	Aux = juegos(G,[_|Nombre]), % como carallo lo añado a la lista
-	retract(juegos(G,_)),
-	assert(Aux),
-	listing(juegos(rol,_)).
+ % comparacion de criticas oficiales
+ mejorCriticaOficial(X,Y) :- criticaGeneroOficial(X,Y).
+ mejorCriticaOficial(X,Y) :- criticaGeneroOficial(X,Z), mejorCriticaOficial(Z,Y).
+ 
+ % comparacion de criticas de usuarios
+ mejorCriticaUsers(X,Y) :- criticaGeneroUsers(X,Y).
+ mejorCriticaUsers(X,Y) :- criticaGeneroUsers(X,Z), mejorCriticaUsers(Z,Y).
 
-% elimina un juego de la BC
-borrar(Nombre,_,_,_,_) :-
-	retract((info(Nombre,_,_,_,_))).
+ % Definimos la comparacion entre las tres categorías, habiendo hecho una
+ % ponderación de importancia basada en valores numéricos, 3 en la opinión
+ % de los usuarios, un 2 en la critica oficial y un 1 en las ventas por género.
+ % Dependiendo de cual se cumpla se escoge imprimir en pantalla el mejor de
+ % ambos (o ninguno si existe empate)
 
-% agrupa en una lista el genero que el usuario desea para el submenu procrastinar
-escogerGenero(Genero,Horas,Duracion):-
+ mejorTotal(Genero1,Genero2,A):-
+        ( mejorVentas(Genero1,Genero2)->
+          A1 is A+1
+        ; A1 is A-1
+        ),
+        ( mejorCriticaOficial(Genero1,Genero2)->
+          A2 is A+2
+        ; A2 is A-2
+        ),
+        ( mejorCriticaUsers(Genero1,Genero2)->
+          A3 is A+3
+        ; A3 is A-3
+        ),
+        % variable a comparar en la impresion
+        Var is A1+A2+A3,
+        imprimirMejorTotal(Genero1,Genero2,Var).
+
+ % imprimimos en pantalla el mejor de los dos géneros
+ imprimirMejorTotal(Genero1,Genero2,Var) :-
+        ( Var > 0 ->
+           format('El mejor género para escoger es: ~w',[Genero1])
+        ; Var < 0 ->
+           format('El mejor género para escoger es: ~w',[Genero2])
+        ; Var = 0 ->
+           format('No hay diferencia entre los géneros a escoger')
+        ),nl,nl.
+
+ % insertar un juego en la BC al final de la lista, en el predicado info
+ insertar(Nombre,Ano,Desarr,HCorta,HLarga) :-
+        assertz(info(Nombre,Ano,Desarr,HCorta,HLarga)).
+
+ % usamos recursividad para eliminar la base de datos cada vez que se actualiza
+ % y dejar la actualizada con el ultimo juego
+ concatenar([],X,[X],_).
+ concatenar([H|T],X,[H|L],G):- concatenar(T,X,L,G),
+        retract(juegos(G,_)),assert(juegos(G,L)).
+
+
+ % inserta el juego en su correspondiente género (tanto en el listado general
+ % como en el predicado juegos)
+ insertarG(G,Nombre):-
+        juegos(G,Lista),
+        concatenar(Lista,Nombre,_,G).
+
+ % elimina un juego de la BC
+ borrar(Nombre,_,_,_,_) :-
+        retract((info(Nombre,_,_,_,_))).
+
+ % agrupa en una lista el genero que el usuario desea para el submenu procrastinar
+ escogerGenero(Genero,Horas,Duracion):-
     juegos(Genero,Lista),
     write('Escoja un juego de la siguiente lista:'),nl,
     recorrer(Lista,Horas,Duracion).
 
-% Inicia para posteriormente recorrer toda la lista de la regla de escogerGenero	
-recorrer([],_,_).
+ % Inicia para posteriormente recorrer toda la lista de la regla de escogerGenero
+ recorrer([],_,_).
 
-% calculo (comparacion) para el juego no completo
-% El parametro de Cola se usa de manera recursiva para revisar todos los juegos de la lista agrupada
-recorrer([X|Cola],Horas,Duracion) :-
-    Duracion == (n),  % Duracion Corta de juego cogiendo el primer parametro de horas a comparar
-    info(X,_,_,Y,_),Horas>=Y, 
+ % calculo (comparacion) para el juego no completo
+ % El parametro de Cola se usa de manera recursiva para revisar todos
+ % los juegos de la lista agrupada
+ recorrer([X|Cola],Horas,Duracion) :-
+    % Duracion Corta de juego cogiendo el primer parametro de horas a comparar
+    Duracion == (n),
+    info(X,_,_,Y,_),Horas >= Y,
     format('  - ~w',[X]), nl,
     recorrer(Cola,Horas,Duracion).
          
-% calculo (comparacion) para el juego completo
-recorrer([X|Cola],Horas,Duracion) :-
-    Duracion == (s),    % Duracion Corta de juego cogiendo el segundo parametro de horas a comparar
+ % calculo (comparacion) para el juego completo
+ recorrer([X|Cola],Horas,Duracion) :-
+    % Duracion Corta de juego cogiendo el segundo parametro de horas a comparar
+    Duracion == (s),
     info(X,_,_,_,Y),Horas>=Y,
     format('  - ~w',[X]), nl,
     recorrer(Cola,Horas,Duracion).
 
-% recursividad en la lista para que vuelva a pasar por los juegos restantes         
-recorrer([_|Cola],Horas,Duracion) :-
+ % recursividad en la lista para que vuelva a pasar por los juegos restantes
+ recorrer([_|Cola],Horas,Duracion) :-
     recorrer(Cola,Horas,Duracion).
